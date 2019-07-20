@@ -3,13 +3,11 @@ package com.wolf.bigdata.spark.urlcount
 import java.net.URL
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Partitioner, SparkConf, SparkContext}
-
-import scala.collection.mutable
+import org.apache.spark.{SparkConf, SparkContext}
 
 
 /**
-  * @Description
+  * @Description 统计每个学院访问url的前3名 [实现：根据域名重新分区后二次排序]
   * @Author wangqikang
   * @Date 2019-07-17 21:20
   */
@@ -19,56 +17,42 @@ object UrlCountWithPartitioner {
     val conf = new SparkConf().setAppName("UrlCountWithPartitioner").setMaster("local[2]")
     val sc = new SparkContext(conf)
 
+    // 读取数据
     val lines: RDD[String] = sc.textFile(args(0))
 
-    // split
+    // 逐行切分数据，并按url计数
     val urlAndOne = lines.map(line => {
       val fields = line.split("\t")
       val url = fields(1)
       (url, 1)
     })
 
-    // 聚合
+    // 按url聚合，统计每个url访问的次数并缓存
     val summedUrl = urlAndOne.reduceByKey(_ + _).cache()
 
+    // 拼接数据(域名,(url,访问次数))，并按域名分组
     val rdd1 = summedUrl.map(t => {
       val host = new URL(t._1).getHost
-      // （学院，（url，次数））
       (host, (t._1, t._2))
     })
 
+    // 统计所有域名
     val urls = rdd1.map(_._1).distinct().collect()
+    // 按域名自定义分区器
     val partitioner = new HostPartitioner(urls)
-
     // 按照自定义的分区器重新分区
     val partitionedRdd = rdd1.partitionBy(partitioner)
 
+    /**
+      * 遍历每个分区，并使用scala list的排序方法二次排序
+      */
     val result = partitionedRdd.mapPartitions(iter => {
       iter.toList.sortBy(_._2._2).reverse.take(3).iterator
     })
 
-    result.saveAsTextFile("/")
+    result.saveAsTextFile("/Users/wangqikang/test/urlcount")
 
     sc.stop()
   }
 
-}
-
-/**
-  * 自定义分区器
-  */
-class HostPartitioner(urls: Array[String]) extends Partitioner {
-  val rules = new mutable.HashMap[String, Int]()
-  var index = 0
-  for (url <- urls) {
-    rules.put(url, index)
-    index += 1
-  }
-
-  override def numPartitions: Int = urls.length
-
-  override def getPartition(key: Any): Int = {
-    val url = key.toString
-    rules.getOrElse(url, 0)
-  }
 }

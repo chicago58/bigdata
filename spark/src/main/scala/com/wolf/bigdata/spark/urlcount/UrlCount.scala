@@ -6,7 +6,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  * @Description 统计每个学院访问url的前3名 [实现：根据域名分组后二次排序]
+  * @Description 统计每个学院访问url的前3名 [实现：根据域名分组后二次排序（scala list中的排序方法可能导致内存溢出）]
   * @Author wangqikang
   * @Date 2019-07-17 08:37
   */
