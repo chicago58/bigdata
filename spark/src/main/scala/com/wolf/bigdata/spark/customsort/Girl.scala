@@ -1,12 +1,12 @@
 package com.wolf.bigdata.spark.customsort
 
 /**
-  * @Description 自定义bean对象封装排序字段
+  * @Description 自定义bean对象封装排序字段 [case class可以封装类，还不用new]
   * @Author wangqikang
   * @Date 2019-07-20 15:15
   */
 /**
-  * 方式一：实现Ordered和Serializable接口
+  * 方式一：继承Ordered、实现Serializable序列化接口
   *
   * @param faceValue 颜值
   * @param age       年龄
@@ -22,7 +22,7 @@ package com.wolf.bigdata.spark.customsort
 //}
 
 /**
-  * 方式二：实现Serializable序列化接口，用于网络中传输数据 [隐式转换实现排序]
+  * 方式二：实现Serializable序列化接口，用于网络传输数据 [隐式转换实现排序]
   *
   * @param faceValue 颜值
   * @param age       年龄
