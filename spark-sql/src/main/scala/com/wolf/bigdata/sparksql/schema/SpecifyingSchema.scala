@@ -14,7 +14,7 @@ object SpecifyingSchema {
   def main(args: Array[String]): Unit = {
 
     // 创建SparkConf()并设置AppName
-    val conf = new SparkConf().setAppName("sql-1")
+    val conf = new SparkConf().setAppName("sql-2")
 
     // SQLContext依赖SparkContext
     val sc = new SparkContext(conf)
