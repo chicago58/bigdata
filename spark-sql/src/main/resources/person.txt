@@ -1,0 +1,4 @@
+1 tom 10
+2 jerry 12
+3 kitty 6
+4 jim 20
