@@ -17,13 +17,13 @@ object ScalaWordCount {
     */
   def main(args: Array[String]): Unit = {
     // 创建 SparkConf 并设置 App 名称
-    val conf = new SparkConf().setAppName("WordCount")
+    val conf = new SparkConf().setAppName("WordCount").setMaster("local")
     // 创建 SparkContext，该对象是通向集群的入口
     val sc = new SparkContext(conf)
     // 读取 hdfs 中的数据
     val lines: RDD[String] = sc.textFile(args(0))
     // 切分单词
-    val words: RDD[String] = lines.flatMap(_.split(""))
+    val words: RDD[String] = lines.flatMap(_.split(" "))
     // 将单词计数
     val wordAndOne: RDD[(String, Int)] = words.map((_, 1))
     // reduceByKey 分组聚合，在每个分区上先进行聚合，再进行全局聚合
