@@ -47,14 +47,15 @@ object MobileLocation {
       val y = fields(2)
       (id, (x, y))
     })
-    // join连接（基站ID，（（手机号，停留时长）（x坐标，y坐标）））
+    // join连接（基站ID，（（手机号，停留时长）,（x坐标，y坐标）））
     val joined: RDD[(String, ((String, Long), (String, String)))] = locationMobileTime.join(splitedLocationInfo)
-    // 根据手机号分组
-    val groupedByMobile = joined.groupBy(_._2._1._1)
+    // 根据基站分组
+    val groupedByMobile = joined.groupBy(_._1)
+    println(groupedByMobile.collect().toBuffer)
     // 根据停留时长降序排序
     val result = groupedByMobile.mapValues(_.toList.sortBy(_._2._1._2).reverse.take(2))
     println(result.collect().toBuffer)
-    //    println(joined.collect().toBuffer)
+//    println(joined.collect().toBuffer)
     sc.stop()
   }
 }
