@@ -50,7 +50,7 @@ object UrlCountWithPartitioner {
       iter.toList.sortBy(_._2._2).reverse.take(3).iterator
     })
 
-    result.saveAsTextFile("/Users/wangqikang/test/urlcount")
+    result.saveAsTextFile("/Users/wangqikang/Work/code/bigdata/spark/src/main/resources/urlcount/output")
 
     sc.stop()
   }

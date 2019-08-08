@@ -45,6 +45,7 @@ object UrlCount {
       val host = new URL(t._1).getHost
       (host, t._1, t._2)
     }).groupBy(_._1)
+    println(grouped.collect().toBuffer)
 
     /**
       * 按域名分组后二次排序：调用scala中list的排序方法
