@@ -12,14 +12,14 @@ import scala.Tuple2;
 import java.util.Arrays;
 
 /**
- * @Description java实现worddcount功能，并提交到集群运行
+ * @Description java实现wordcount功能，并提交到集群运行
  * @Author wangqikang
  * @Date 2019-07-15 23:14
  */
 public class JavaWordCount {
 
     public static void main(String[] args) {
-        SparkConf conf = new SparkConf().setAppName("JavaWordCount");
+        SparkConf conf = new SparkConf().setAppName("JavaWordCount").setMaster("local");
         // 创建 java spark context
         JavaSparkContext jsc = new JavaSparkContext(conf);
         // 读取数据
