@@ -79,7 +79,7 @@ object IpDemo {
     println(ipNum)
 
     // 读取文件内容保存到字符数组中
-    val lines = readData("/Users/wangqikang/Work/code/bigdata/spark/src/main/resources/ip.txt")
+    val lines = readData("/Users/wangqikang/Work/code/bigdata/spark/src/main/resources/iplocation/ip.txt")
     // 二分查找ip归属地
     val index = binarySearch(lines, ipNum)
     print(lines(index))
