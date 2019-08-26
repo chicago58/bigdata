@@ -3,6 +3,7 @@ package com.wolf.bigdata.zookeeper;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
  * @Author wangqikang
  * @Date 2019-08-22 7:23
  */
+@Ignore
 public class SimpleZkClientTest {
     private static final String connectString = "mini1:2181,mini2:2181,mini3:2181";
     private static final int sessionTimeout = 2000;

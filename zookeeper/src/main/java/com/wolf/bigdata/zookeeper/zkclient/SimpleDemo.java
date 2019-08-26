@@ -1,4 +1,4 @@
-package com.wolf.bigdata.zookeeper.zklock;
+package com.wolf.bigdata.zookeeper.zkclient;
 
 import org.apache.zookeeper.*;
 
