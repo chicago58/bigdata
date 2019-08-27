@@ -33,6 +33,13 @@ public class SimpleZkClientTest {
      */
     @Before
     public void init() throws Exception {
+        /**
+         * 创建客户端连接时与zookeeper集群三次握手，而握手的过程并不是在一瞬间完成；
+         * 当主线程中创建对象的语句执行完成并调用zookeeper API创建节点时，也许客户端没有完成连接（可能报错）；
+         * 此时应该等待客户端连接对象创建完成。
+         *
+         * 而客户端连接对象创建完成后会调用回调方法，传入的事件为SyncConnect（同步连接）
+         */
         zkClient = new ZooKeeper(connectString, sessionTimeout, new Watcher() {
             /**
              * 回调方法（事件处理逻辑）
