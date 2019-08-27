@@ -12,6 +12,7 @@ public class RedisClientConnection {
     public static void main(String[] args) {
         // 构造redis客户端对象
         Jedis jedis = new Jedis("centos", 6379);
+        // 测试是否连接到服务器
         String ping = jedis.ping();
         System.out.println(ping);
     }
