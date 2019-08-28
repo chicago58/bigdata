@@ -1,4 +1,4 @@
-package com.wolf.bigdata.redis.string;
+package com.wolf.bigdata.redis.stringcache;
 
 import com.google.gson.Gson;
 import com.wolf.bigdata.redis.bo.ProductInfo;
@@ -9,7 +9,7 @@ import redis.clients.jedis.Jedis;
 import java.io.*;
 
 /**
- * @Description String数据结构最适合做缓存
+ * @Description redis中String数据结构最适合做缓存
  * @Author wangqikang
  * @Date 2019-08-27 20:14
  */
