@@ -1,4 +1,4 @@
-package com.wolf.scala
+package com.wolf.scala.grammar
 
 object BlockExpressionDemo {
   def main(args: Array[String]): Unit = {

@@ -1,4 +1,4 @@
-package com.wolf.scala
+package com.wolf.scala.grammar
 
 object ForDemo {
   def main(args: Array[String]): Unit = {
