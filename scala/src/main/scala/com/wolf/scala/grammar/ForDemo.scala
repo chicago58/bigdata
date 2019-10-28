@@ -15,7 +15,7 @@ object ForDemo {
     }
     println()
 
-    // 高级for循环，每个生成器都可以带一个条件，if前面没有分号
+    // 高级for循环，每个生成器表达式都可以带一个条件，if前面没有分号
     for (i <- 1 to 3; j <- 1 to 3 if i != j) {
       print((10 * i + j) + " ")
     }
