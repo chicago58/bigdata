@@ -36,8 +36,9 @@ import java.io.IOException;
 public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     /**
-     * map() 是mapreduce框架主体运行程序MapTask所要调用的用户业务逻辑方法
-     * MapTask 驱动 InputFormat 读取数据到（KEYIN, VALUEIN），每读到一个 KV 对，就调用一次 map()
+     * map() 是MapReduce框架主体运行程序MapTask所要调用的用户业务逻辑方法
+     * MapTask 驱动 InputFormat 读取数据到（KEYIN, VALUEIN），每读到一个 KV 对，就调用一次map方法
+     * 所以map方法调用次数取决于 InputFormat 读取数据的机制
      * <p>
      * 默认InputFormat实现中，key为一行的起始偏移量，value为一行的内容
      *
@@ -50,7 +51,7 @@ public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritabl
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String line = value.toString();
-        String[] words = line.split(" ");
+        String[] words = line.split(" "); // 如果是中文需要考虑分词器
         for (String word : words) {
             context.write(new Text(word), new IntWritable(1));
         }
