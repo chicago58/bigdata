@@ -25,6 +25,13 @@
             <artifactId>spark-sql_2.10</artifactId>
             <version>1.6.2</version>
         </dependency>
+
+        <!-- JDBC连接驱动包 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.46</version>
+        </dependency>
     </dependencies>
 
     <build>
