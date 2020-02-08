@@ -1,4 +1,4 @@
-package com.wolf.bigdata.sparksql.schema
+package com.wolf.schema
 
 /**
   * @Description
