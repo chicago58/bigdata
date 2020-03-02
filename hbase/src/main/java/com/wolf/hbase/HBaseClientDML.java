@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.CellScanner;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class HBaseClientDML {
         //获取表对象
         Table table = conn.getTable(TableName.valueOf("user_info"));
 
-        ArrayList<Put> puts = new ArrayList<>();
+        ArrayList<Put> puts = new ArrayList<Put>();
 
         //构建Put对象，并指定Row Key
         Put put1 = new Put(Bytes.toBytes("user001"));
@@ -119,11 +120,19 @@ public class HBaseClientDML {
         table.close();
     }
 
-    private static void scanDataFromTable() throws IOException {
+    /**
+     * 批量查询数据
+     *
+     * @throws IOException
+     */
+    private static void scanDataFromTable(Filter filter) throws IOException {
         //获取表对象
         Table table = conn.getTable(TableName.valueOf("user_info"));
 
         Scan scan = new Scan();
+        if (filter != null) {
+            scan.setFilter(filter);
+        }
         ResultScanner scanner = table.getScanner(scan);
         Iterator<Result> iterator = scanner.iterator();
         while (iterator.hasNext()) {
@@ -149,6 +158,101 @@ public class HBaseClientDML {
         table.close();
     }
 
+    /**
+     * 过滤器查询
+     */
+    private static void filter() throws IOException {
+        //针对Row Key的前缀过滤器
+        Filter prefixFilter = new PrefixFilter(Bytes.toBytes("liu"));
+        scanDataFromTable(prefixFilter);
+
+        //行过滤器
+        RowFilter rowFilter1 = new RowFilter(CompareFilter.CompareOp.LESS, new BinaryComparator(Bytes.toBytes("user002")));
+        scanDataFromTable(rowFilter1);
+        RowFilter rowFilter2 = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("01"));
+        scanDataFromTable(rowFilter2);
+
+        //针对指定列的value来过滤
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter("base_info".getBytes(), "password".getBytes(), CompareFilter.CompareOp.EQUAL, "123456".getBytes());
+        singleColumnValueFilter.setFilterIfMissing(true); //若指定的列缺失，则过滤
+        scanDataFromTable(singleColumnValueFilter);
+
+        //针对指定列的value比较器来过滤
+        ByteArrayComparable comparator1 = new RegexStringComparator("^zhang");
+        ByteArrayComparable comparator2 = new SubstringComparator("ang");
+        SingleColumnValueFilter scvf = new SingleColumnValueFilter("base_info".getBytes(), "username".getBytes(), CompareFilter.CompareOp.EQUAL, comparator1);
+        scanDataFromTable(scvf);
+
+        //针对列族名的过滤器，返回结果中只会包含满足条件的列族中的数据
+        FamilyFilter ff1 = new FamilyFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes("info")));
+        FamilyFilter ff2 = new FamilyFilter(CompareFilter.CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes("base")));
+        scanDataFromTable(ff2);
+
+        //针对列名的过滤器，返回结果中只会包含满足条件的列数据
+        QualifierFilter qf1 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes("password")));
+        QualifierFilter qf2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes("us")));
+        scanDataFromTable(qf1);
+
+        //只返回符合条件的列数据
+        ColumnPrefixFilter cf = new ColumnPrefixFilter("pass".getBytes());
+        scanDataFromTable(cf);
+
+        //针对多列的前缀过滤器
+        byte[][] prefixs = new byte[][]{
+                Bytes.toBytes("username"),
+                Bytes.toBytes("password")
+        };
+        MultipleColumnPrefixFilter mcpf = new MultipleColumnPrefixFilter(prefixs);
+        scanDataFromTable(mcpf);
+
+        FamilyFilter ff = new FamilyFilter(CompareFilter.CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes("base")));
+        ColumnPrefixFilter cpf = new ColumnPrefixFilter("password".getBytes());
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(ff);
+        filterList.addFilter(cpf);
+        scanDataFromTable(filterList);
+    }
+
+    /**
+     * 分页查询
+     */
+    private void pageScan() throws IOException, InterruptedException {
+        //获取表对象
+        Table table = conn.getTable(TableName.valueOf("user_info"));
+
+        final byte[] POSTFIX = new byte[]{0x00};
+        //设置每页大小
+        Filter filter = new PageFilter(3);
+        //记录起始行号
+        byte[] lastRow = null;
+        //记录总数
+        int totalRows = 0;
+        while (true) {
+            Scan scan = new Scan();
+            scan.setFilter(filter);
+            if (lastRow != null) {
+                byte[] startRow = Bytes.add(lastRow, POSTFIX);
+                //设置本次查询的起始行
+                scan.setStartRow(startRow);
+            }
+
+            ResultScanner scanner = table.getScanner(scan);
+            int localRows = 0;
+            Result result;
+            while ((result = scanner.next()) != null) {
+                System.out.println(++localRows + ":" + result);
+                totalRows++;
+                lastRow = result.getRow();
+            }
+            scanner.close();
+            if (localRows == 0) {
+                break;
+            }
+            Thread.sleep(2000);
+        }
+        System.out.println("total rows: " + totalRows);
+    }
+
     public static void main(String[] args) throws IOException {
         //初始化参数
         init();
@@ -162,8 +266,11 @@ public class HBaseClientDML {
         //获取数据
         getDataFromTable();
 
-        //全表扫描
-        scanDataFromTable();
+        //批量查询数据
+        scanDataFromTable(null);
+
+        //过滤器查询
+        filter();
 
         conn.close();
     }
