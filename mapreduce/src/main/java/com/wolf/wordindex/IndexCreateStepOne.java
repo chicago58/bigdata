@@ -1,4 +1,4 @@
-package com.wolf.index;
+package com.wolf.wordindex;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -24,7 +24,7 @@ public class IndexCreateStepOne {
             String line = value.toString();
             String[] words = line.split(" ");
 
-            // 通过上下文context获取正在处理的文件切片信息
+            // 通过上下文context获取正在处理的文件切片信息（context包含了本次处理数据的文件信息）
             FileSplit fileSplit = (FileSplit) context.getInputSplit();
             // 获取文件名
             String fileName = fileSplit.getPath().getName();
@@ -56,6 +56,7 @@ public class IndexCreateStepOne {
         Job job = Job.getInstance(conf);
 
         job.setJarByClass(IndexCreateStepOne.class);
+
         job.setMapperClass(IndexCreateStepOneMapper.class);
         job.setReducerClass(IndexCreateStepOneReducer.class);
         job.setCombinerClass(IndexCreateStepOneReducer.class);

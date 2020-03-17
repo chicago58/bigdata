@@ -1,4 +1,4 @@
-package com.wolf.index;
+package com.wolf.wordindex;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -53,6 +53,7 @@ public class IndexCreateStepTwo {
         Job job = Job.getInstance(conf);
 
         job.setJarByClass(IndexCreateStepTwo.class);
+
         job.setMapperClass(IndexCreateStepTwoMapper.class);
         job.setReducerClass(IndexCreateStepTwoReducer.class);
         job.setCombinerClass(IndexCreateStepTwoReducer.class);
