@@ -6,10 +6,8 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 
-import java.net.URI;
-
 /**
- * @Description HDFS文件操作
+ * @Description HDFS Java API
  * @Author wangqikang
  * @CreatedAt 2020-03-06 21:42
  **/
