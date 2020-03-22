@@ -1,4 +1,4 @@
-package com.wolf;
+package com.wolf.wordcount;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;

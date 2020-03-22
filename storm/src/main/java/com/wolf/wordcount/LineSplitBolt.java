@@ -1,4 +1,4 @@
-package com.wolf;
+package com.wolf.wordcount;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
