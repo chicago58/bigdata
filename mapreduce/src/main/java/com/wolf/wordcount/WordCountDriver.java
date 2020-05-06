@@ -26,14 +26,23 @@ public class WordCountDriver {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration(); // 加载hadoop配置参数
+
+        // 本地提交程序到集群上运行
+//        conf.set("fs.defaultFS", "hdfs://mini1:9000");
+//        conf.set("mapreduce.framework.name", "yarn");
+//        conf.set("yarn.resourcemanager.hostname", "mini1");
+
         Job job = Job.getInstance(conf);
 
         // 程序jar包所在路径
-        job.setJar("../bigdata/mapreduce/target/mapreduce-1.0-SNAPSHOT.jar");
+//        job.setJar("../bigdata/mapreduce/target/mapreduce-1.0-SNAPSHOT.jar");
+        job.setJarByClass(WordCountDriver.class); // 不需要指定jar包具体路径
 
         // 程序所用Mapper和Reducer类
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
+
+        job.setCombinerClass(WordCountReducer.class);
 
         // Mapper和Reducer输出数据类型
         job.setMapOutputKeyClass(Text.class);

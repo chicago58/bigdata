@@ -10,6 +10,18 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>spark</module>
+        <module>spark-sql</module>
+        <module>hadoop-rpc</module>
+        <module>mapreduce</module>
+        <module>kafka</module>
+        <module>redis</module>
+        <module>enhance-java</module>
+        <module>scala</module>
+        <module>spark-streaming</module>
+        <module>hive-udf</module>
+        <module>flink</module>
+        <module>hdfs</module>
+        <module>storm</module>
     </modules>
 
 
